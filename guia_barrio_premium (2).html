@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <!-- Meta tag crucial para Mobile First y evitar zoom no deseado en inputs en iOS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Guía Digital Interactiva del Barrio</title>
+    
+    <!-- Fuentes Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <style>
+        :root {
+            /* Paleta de colores solicitada */
+            --c-bg: #FFFFFF;
+            --c-aurora-1: #eaf2eb;
+            --c-aurora-2: #f2f7f3;
+            --c-primary: #7FA68A;
+            --c-secondary: #A8C5AE;
+            --c-dark-green: #294A36;
+            --c-text-main: #202620;
+            --c-text-muted: #727A73;
+            --c-border: rgba(41, 74, 54, 0.12);
+            --c-glass-bg: rgba(255, 255, 255, 0.85);
+            
+            /* Tipografía y espaciados fluidos */
+            --font-main: 'Inter', sans-serif;
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+            --radius-full: 9999px;
+            
+            /* Sombras naturales */
+            --shadow-sm: 0 4px 12px rgba(41, 74, 54, 0.04);
+            --shadow-md: 0 8px 24px rgba(41, 74, 54, 0.08);
+            --shadow-lg: 0 20px 40px rgba(41, 74, 54, 0.12);
+            --shadow-hover: 0 12px 32px rgba(41, 74, 54, 0.15);
+            
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            
+            /* Layout variables */
+            --container-px: 20px; /* Padding lateral en móviles */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--c-bg);
+            color: var(--c-text-main);
+            line-height: 1.5;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent; /* Mejora UX táctil */
+        }
+
+        /* Utilities */
+        .glass {
+            background: var(--c-glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--c-border);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--c-border);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--container-px);
+        }
+
+        a { text-decoration: none; color: inherit; cursor: pointer; }
+        button { border: none; background: none; cursor: pointer; font-family: inherit; }
+        img { max-width: 100%; display: block; object-fit: cover; }
+        ul { list-style: none; }
+        svg { width: 1em; height: 1em; }
+
+        /* Aurora Mesh Background - Optimizado */
+        .aurora-bg {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1;
+            background-color: var(--c-bg);
+            background-image: 
+                radial-gradient(ellipse at 10% 20%, var(--c-aurora-1) 0%, transparent 60%),
+                radial-gradient(ellipse at 90% 80%, var(--c-aurora-2) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 10%, var(--c-aurora-1) 0%, transparent 50%);
+            opacity: 0.9; pointer-events: none;
+        }
+
+        /* Navbar Mobile First */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%;
+            z-index: 100; padding: 12px 0; transition: var(--transition);
+        }
+        .navbar .container { display: flex; justify-content: space-between; align-items: center; }
+        
+        .logo { font-weight: 700; font-size: 1.5rem; color: var(--c-dark-green); letter-spacing: -0.5px; }
+
+        /* Botones Base - Mobile First (Touch targets grandes de mínimo 44px) */
+        .btn-primary {
+            background-color: var(--c-dark-green); color: white !important;
+            padding: 12px 24px; border-radius: var(--radius-full);
+            font-weight: 500; font-size: 1rem;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            transition: var(--transition);
+            min-height: 48px; /* Touch friendly */
+        }
+        .btn-primary:active { transform: scale(0.97); }
+
+        .btn-secondary {
+            background: rgba(255,255,255,0.8); border: 1px solid var(--c-border);
+            color: var(--c-dark-green); padding: 12px 24px;
+            border-radius: var(--radius-full); font-weight: 500; font-size: 1rem;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            transition: var(--transition); min-height: 48px;
+        }
+        .btn-secondary:active { background: #f5f5f5; }
+
+        .btn-icon {
+            width: 48px; height: 48px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--c-aurora-2); color: var(--c-dark-green);
+            font-size: 1.25rem; transition: var(--transition);
+        }
+
+        /* Menú Mobile Overlay */
+        .nav-links { display: none; } /* Oculto en móvil, se usa el overlay */
+        .menu-toggle { display: block; }
+        
+        .mobile-menu {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100vh;
+            background: var(--c-glass-bg); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+            z-index: 99; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            gap: 32px; opacity: 0; pointer-events: none; transition: var(--transition);
+            transform: translateY(-10px);
+        }
+        .mobile-menu.active { opacity: 1; pointer-events: auto; transform: translateY(0); }
+        .mobile-menu a { font-size: 1.5rem; font-weight: 600; color: var(--c-dark-green); }
+
+        /* Vistas (SPA) */
+        .view { display: none; opacity: 0; padding-top: 80px; min-height: 100vh; padding-bottom: 60px; }
+        .view.active { display: block; opacity: 1; }
+
+        /* Tipografía */
+        h1, h2, h3 { color: var(--c-dark-green); letter-spacing: -0.02em; }
+        .tagline {
+            display: inline-block; font-size: 0.75rem; font-weight: 700;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            color: var(--c-primary); margin-bottom: 12px;
+        }
+
+        /* Hero Section */
+        .hero { padding: 40px 0; text-align: center; }
+        .hero-title {
+            font-size: clamp(2.25rem, 8vw, 4.5rem); /* Tipografía fluida extrema para móvil a desktop */
+            line-height: 1.1; margin-bottom: 16px; overflow: hidden;
+        }
+        .hero-title .word { display: inline-block; transform: translateY(110%); opacity: 0; }
+        .hero-subtitle {
+            font-size: clamp(1rem, 4vw, 1.25rem); color: var(--c-text-muted);
+            max-width: 600px; margin: 0 auto 32px;
+        }
+
+        /* Buscador Mobile First */
+        .search-container { position: relative; z-index: 10; max-width: 600px; margin: 0 auto; }
+        .search-bar {
+            display: flex; align-items: center; padding: 4px 4px 4px 20px;
+            border-radius: var(--radius-full); background: white;
+            box-shadow: var(--shadow-md); border: 1px solid var(--c-border);
+            transition: var(--transition);
+        }
+        .search-bar:focus-within { box-shadow: var(--shadow-hover); border-color: var(--c-primary); }
+        .search-bar input {
+            flex: 1; border: none; background: transparent; font-size: 16px; /* Evita zoom en iOS */
+            outline: none; color: var(--c-text-main); padding: 12px 0; width: 100%;
+        }
+        .search-icon { color: var(--c-dark-green); margin-right: 12px; display: flex; align-items: center; }
+        .search-icon svg { width: 20px; height: 20px; display: block; }
+        
+        .search-suggestions {
+            position: absolute; top: calc(100% + 12px); left: 0; width: 100%;
+            border-radius: var(--radius-md); padding: 12px; display: none; text-align: left;
+            box-shadow: var(--shadow-lg); background: white; border: 1px solid var(--c-border);
+        }
+        .search-suggestions.active { display: block; animation: slideDown 0.3s ease; }
+        .suggestion-item {
+            padding: 14px 16px; border-radius: var(--radius-sm); cursor: pointer;
+            display: flex; align-items: center; gap: 12px; font-weight: 500; font-size: 0.95rem;
+        }
+        .suggestion-item:active { background-color: var(--c-aurora-2); }
+
+        /* Sections */
+        .section-padding { padding: 48px 0; }
+        .section-header { margin-bottom: 24px; text-align: left; display: flex; justify-content: space-between; align-items: flex-end; }
+        .section-title { font-size: clamp(1.5rem, 5vw, 2rem); }
+
+        /* Categorías - Mobile First: Grilla de 2 columnas */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .cat-card {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 24px 12px; border-radius: var(--radius-lg); text-align: center;
+            background: white; border: 1px solid var(--c-primary);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.06); 
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease, border-color 0.4s ease;
+            position: relative; cursor: pointer;
+            overflow: hidden; /* Para contener el fondo */
+        }
+        /* Fondo verde pastoso sutil permanente */
+        .cat-card::before {
+            content: '';
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 100%;
+            background: var(--c-primary);
+            opacity: 0.1;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+        .cat-card:hover {
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 16px 32px rgba(0,0,0,0.12);
+            z-index: 2;
+        }
+        .cat-card:active { transform: scale(0.97); }
+        
+        .cat-arrow {
+            position: absolute; top: 12px; right: 12px;
+            width: 26px; height: 26px; border-radius: 50%;
+            background: var(--c-dark-green); color: white;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 1; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 3;
+        }
+        .cat-arrow svg { width: 14px; height: 14px; }
+        
+        .cat-icon {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: var(--c-dark-green); color: white;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 12px; font-size: 1.5rem; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 3;
+        }
+        .cat-card:hover .cat-icon {
+            transform: scale(1.15) rotate(5deg);
+        }
+        .cat-title { font-weight: 600; font-size: 0.95rem; color: var(--c-text-main); }
+
+        /* Lugares Destacados - Mobile First: Scroll Horizontal (Carousel) */
+        .places-scroll-container {
+            /* Permite que la sombra no se corte al scrollear */
+            margin: 0 calc(var(--container-px) * -1);
+            padding: 8px var(--container-px) 32px var(--container-px);
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch; /* Suavidad en iOS */
+            scrollbar-width: none; /* Ocultar scrollbar Firefox */
+        }
+        .places-scroll-container::-webkit-scrollbar { display: none; } /* Ocultar scrollbar Chrome/Safari */
+
+        .places-grid { 
+            display: flex; 
+            gap: 20px; 
+            width: max-content; /* Permite el scroll continuo sin comprimir */
+            padding-right: 20px; /* Ajuste matemático para el loop infinito (iguala al gap) */
+        }
+
+        .place-card {
+            min-width: 85vw; /* Ocupa casi toda la pantalla en móvil */
+            border-radius: var(--radius-lg); background: white;
+            border: 1px solid var(--c-border); box-shadow: var(--shadow-md);
+            overflow: hidden; display: flex; flex-direction: column; position: relative;
+            transition: var(--transition);
+            transform: translateZ(0); /* Aceleración por hardware para scroll suave */
+        }
+        
+        .place-img-wrap { position: relative; padding-top: 55%; overflow: hidden; }
+        .place-img-wrap img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .place-badge {
+            position: absolute; top: 12px; left: 12px; padding: 6px 14px;
+            border-radius: var(--radius-full); font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+            background: rgba(255,255,255,0.9); color: var(--c-dark-green); box-shadow: var(--shadow-sm);
+        }
+        
+        .place-content { padding: 20px; display: flex; flex-direction: column; flex: 1; }
+        .place-title { font-size: 1.25rem; margin-bottom: 6px; line-height: 1.2; }
+        .place-address { color: var(--c-text-muted); font-size: 0.85rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+        .place-desc { font-size: 0.95rem; color: var(--c-text-main); margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
+        
+        /* Botón Llevarme ahí directo en la Card - Rediseñado para UX táctil */
+        .btn-card-action {
+            background-color: var(--c-primary); color: white !important;
+            width: 100%; padding: 14px; border-radius: var(--radius-md);
+            font-weight: 600; font-size: 1rem;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: var(--transition); border: none; margin-top: auto;
+        }
+        .btn-card-action:active { background-color: var(--c-dark-green); transform: scale(0.98); }
+
+        /* Breadcrumbs */
+        .breadcrumbs {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 8px;
+            font-size: 0.85rem; color: var(--c-text-muted); margin-bottom: 24px;
+        }
+        
+        /* Vista Categoría Grid (Distinta al carousel de inicio) */
+        .category-places-grid { display: grid; grid-template-columns: 1fr; gap: 24px; }
+        
+        /* Vista Detalle */
+        .place-detail-header { margin-bottom: 24px; }
+        .place-detail-title { font-size: clamp(2rem, 6vw, 3rem); margin-bottom: 12px; line-height: 1.1; }
+        
+        .gallery-container { margin-bottom: 32px; margin-left: calc(var(--container-px) * -1); margin-right: calc(var(--container-px) * -1); }
+        .main-image { width: 100%; height: 50vh; position: relative; }
+        .main-image img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .thumbnails { display: flex; gap: 12px; overflow-x: auto; padding: 16px var(--container-px); scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .thumbnails::-webkit-scrollbar { display: none; }
+        .thumb { min-width: 80px; height: 80px; border-radius: var(--radius-sm); overflow: hidden; opacity: 0.6; transition: var(--transition); border: 2px solid transparent; }
+        .thumb.active { opacity: 1; border-color: var(--c-primary); }
+        .thumb img { width: 100%; height: 100%; }
+
+        .info-card { padding: 24px; border-radius: var(--radius-lg); margin-bottom: 16px; background: white; border: 1px solid var(--c-border); box-shadow: var(--shadow-sm); }
+        .info-card h3 { margin-bottom: 16px; font-size: 1.15rem; }
+        .info-list { display: flex; flex-direction: column; gap: 16px; }
+        .info-item { display: flex; align-items: flex-start; gap: 12px; font-size: 0.95rem; }
+        .info-icon { color: var(--c-primary); font-size: 1.25rem; flex-shrink: 0; margin-top: 2px; }
+
+        /* Action Panel Desktop vs Mobile */
+        .action-panel { display: none; } /* Oculto en móvil por defecto, usamos bottom bar */
+        
+        /* Mobile Sticky Bottom Action Bar */
+        .mobile-bottom-action {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            padding: 16px var(--container-px) 24px var(--container-px);
+            background: var(--c-glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+            border-top: 1px solid var(--c-border); z-index: 90;
+            display: flex; gap: 12px;
+            transform: translateY(150%); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .mobile-bottom-action.active { transform: translateY(0); }
+        .mobile-bottom-action .btn-primary { flex: 1; height: 56px; font-size: 1.1rem; }
+        .mobile-bottom-action .btn-icon { width: 56px; height: 56px; background: white; border: 1px solid var(--c-border); }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* RESPONSIVE DESKTOP (Min-width: 768px y 1024px) */
+        @media (min-width: 768px) {
+            :root { --container-px: 40px; }
+            body { padding-top: 20px; } /* Más aire en desktop */
+            
+            /* Navbar */
+            .navbar { padding: 16px 0; }
+            .navbar.scrolled { background: var(--c-glass-bg); border-bottom: 1px solid var(--c-border); }
+            .navbar.scrolled .container { padding-top: 8px; padding-bottom: 8px; }
+            .menu-toggle { display: none; }
+            .nav-links { display: flex; gap: 32px; align-items: center; }
+            .nav-links a { font-weight: 500; font-size: 0.95rem; color: white; text-shadow: 0 2px 8px rgba(0,0,0,0.8); transition: var(--transition); }
+            .nav-links a:hover { color: var(--c-secondary); }
+            .navbar.scrolled .nav-links a { color: var(--c-text-muted); text-shadow: none; }
+            .navbar.scrolled .nav-links a:hover { color: var(--c-dark-green); }
+            .navbar .logo span { color: white !important; text-shadow: 0 2px 8px rgba(0,0,0,0.8); transition: var(--transition); }
+            .navbar.scrolled .logo span { color: var(--c-dark-green) !important; text-shadow: none; }
+
+            /* Hero */
+            .hero { padding: 80px 0 60px; }
+            
+            /* Grillas */
+            /* Destacados - Desktop: Carousel en lugar de grilla para mantener autoplay */
+            .places-scroll-container { 
+                overflow-x: auto; 
+                padding: 16px 0 40px 0; 
+                margin: 0; 
+            }
+            .places-grid { 
+                display: flex; 
+                gap: 32px; 
+                width: max-content; 
+                padding-right: 32px; /* Ajuste matemático para el loop (iguala al gap) */
+            }
+            .place-card { min-width: 360px; max-width: 400px; }
+            .place-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-hover); }
+            .btn-card-action { opacity: 0; transform: translateY(10px); }
+            .place-card:hover .btn-card-action { opacity: 1; transform: translateY(0); } /* Hover effect elegant */
+
+            /* Category Page */
+            .category-places-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 32px; }
+
+            /* Detalle Lugar */
+            .gallery-container { margin: 0 0 48px 0; }
+            .main-image { height: 60vh; border-radius: var(--radius-lg); overflow: hidden; }
+            .thumbnails { padding: 0 0 16px 0; }
+            .thumb { width: 120px; height: 90px; cursor: pointer; }
+            .thumb:hover { opacity: 1; }
+
+            .place-info-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 48px; }
+            .info-card { padding: 32px; }
+            
+            /* Toggle Action Panels */
+            .mobile-bottom-action { display: none !important; }
+            .action-panel { display: block; position: sticky; top: 120px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fondo Aurora -->
+    <div class="aurora-bg"></div>
+
+    <!-- Menú Overlay Mobile -->
+    <div class="mobile-menu" id="mobile-menu">
+        <a onclick="app.closeMenu(); app.navigate('home')">Inicio</a>
+        <a onclick="app.closeMenu(); app.scrollTo('categories-section')">Categorías</a>
+        <a onclick="app.closeMenu(); app.scrollTo('featured-section')">Destacados</a>
+        <button class="btn-primary" onclick="app.closeMenu(); app.scrollTo('categories-section')">Explorar Mapa</button>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <div class="logo" onclick="app.navigate('home')" style="display: flex; align-items: center; cursor: pointer;">
+                <img src="assets/logo 20.png" alt="Logo" style="height: 56px; width: auto; object-fit: contain;">
+                <span style="margin-left: 12px; font-weight: 700;">20 de junio</span>
+            </div>
+            
+            <!-- Botón Hamburguesa Móvil -->
+            <button class="btn-icon menu-toggle" id="menu-toggle" onclick="app.toggleMenu()" aria-label="Abrir menú">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            </button>
+
+            <!-- Links Desktop -->
+            <div class="nav-links">
+                <a onclick="app.navigate('home')">Inicio</a>
+                <a onclick="app.scrollTo('categories-section')">Categorías</a>
+                <a onclick="app.scrollTo('featured-section')">Destacados</a>
+                <button class="btn-primary" onclick="app.scrollTo('categories-section')">
+                    Explorar
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Barra de acción pegajosa inferior (Sólo Móvil - Detalle de lugar) -->
+    <div class="mobile-bottom-action" id="mobile-action-bar">
+        <button class="btn-icon" aria-label="Guardar Favorito">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+        </button>
+        <button class="btn-primary" id="btn-mobile-llevame">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+            Llevarme ahí
+        </button>
+    </div>
+
+    <main id="app-container">
+        
+        <!-- VISTA: INICIO -->
+        <section id="view-home" class="view active">
+            <!-- Hero -->
+            <div class="hero" style="position: relative; overflow: hidden; min-height: 100vh; display: flex; align-items: center; justify-content: center; margin-top: -100px; padding-top: 100px;">
+                <div class="hero-video-wrap" style="position: absolute; top: -15%; left: 0; width: 100%; height: 130%; z-index: -1;">
+                    <video autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover;">
+                        <source src="assets/hero/20video hero.mp4" type="video/mp4">
+                    </video>
+                    <div class="hero-overlay" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6);"></div>
+                </div>
+                <div class="container" style="position: relative; z-index: 1;">
+                    <h1 class="hero-title" id="hero-title-text" style="color: white; text-shadow: 0 2px 8px rgba(0,0,0,0.5);">Todo lo que necesitás.</h1>
+                    <p class="hero-subtitle gs-reveal" style="color: #eaf2eb; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Descubrí lugares, encontrá servicios y explorá todo lo que tenés cerca, a un clic de distancia.</p>
+                    
+                    <div class="search-container gs-reveal">
+                    <div class="search-bar">
+                        <span class="search-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                        </span>
+                        <!-- type="search" habilita teclado especial en móviles -->
+                        <input type="search" id="main-search" placeholder="Buscar p. ej. Farmacia, Pizza...">
+                        <button class="btn-primary d-md-block" style="padding: 8px 16px; border-radius: 99px; min-height: 40px;">Buscar</button>
+                    </div>
+                    <!-- Sugerencias -->
+                    <div class="search-suggestions" id="search-sugg">
+                        <div class="suggestion-item" onclick="app.navigate('category', 'restaurantes')">🍕 Restaurantes y gastronomía</div>
+                        <div class="suggestion-item" onclick="app.navigate('category', 'farmacias')">💊 Farmacias de turno</div>
+                        <div class="suggestion-item" onclick="app.navigate('category', 'salud')">🏥 Hospitales y clínicas</div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Categorías -->
+            <div id="categories-section" class="container section-padding">
+                <div class="section-header gs-reveal">
+                    <h2 class="section-title">Encontrá lo que necesitás</h2>
+                </div>
+                <div class="categories-grid" id="cat-grid">
+                    <!-- JS inyectará las categorías con SVGs profesionales -->
+                </div>
+            </div>
+
+            <!-- Destacados -->
+            <div id="featured-section" class="section-padding">
+                <div class="container section-header gs-reveal" style="align-items: center;">
+                    <h2 class="section-title" style="margin:0;">Lugares destacados</h2>
+                </div>
+                <!-- Contenedor con scroll horizontal en móvil -->
+                <div class="places-scroll-container gs-reveal">
+                    <div class="places-grid" id="featured-grid">
+                        <!-- JS inyectará los lugares aquí -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: CATEGORÍA -->
+        <section id="view-category" class="view">
+            <div class="container">
+                <div class="breadcrumbs">
+                    <a onclick="app.navigate('home')">Inicio</a>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    <span id="cat-crumb-name" style="color: var(--c-text-main); font-weight: 500;">Categoría</span>
+                </div>
+                
+                <div class="category-header gs-reveal" style="margin-bottom: 32px;">
+                    <h1 class="section-title" id="cat-page-title">Nombre Categoría</h1>
+                    <p class="place-address" id="cat-page-meta" style="font-size: 1rem; margin-top: 8px;">0 lugares encontrados</p>
+                </div>
+
+                <div class="search-bar gs-reveal" style="margin-bottom: 32px; max-width: 100%; box-shadow:none; border: 1px solid var(--c-border); background: var(--c-glass-bg);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="var(--c-primary)" stroke-width="2" style="margin-left: 16px;"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+                    <input type="text" placeholder="Filtrar resultados..." style="padding-left: 12px;">
+                </div>
+
+                <div class="category-places-grid" id="category-places-grid">
+                    <!-- JS inyectará lugares filtrados aquí -->
+                </div>
+            </div>
+        </section>
+
+        <!-- VISTA: DETALLE DE LUGAR -->
+        <section id="view-place" class="view">
+            <div class="container">
+                <div class="breadcrumbs">
+                    <a onclick="app.navigate('home')">Inicio</a>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    <a id="place-crumb-cat">Categoría</a>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                    <span id="place-crumb-name" style="color: var(--c-text-main); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px;">Lugar</span>
+                </div>
+
+                <div class="place-detail-header gs-reveal">
+                    <span class="tagline" id="place-detail-cat">Categoría</span>
+                    <h1 class="place-detail-title" id="place-detail-title">Nombre del Lugar</h1>
+                    <div class="place-address" style="font-size: 1rem;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                        <span id="place-detail-address">Dirección</span>
+                    </div>
+                </div>
+
+                <div class="gallery-container gs-reveal">
+                    <div class="main-image">
+                        <img id="place-main-img" src="" alt="Vista principal">
+                    </div>
+                    <div class="thumbnails" id="place-thumbs">
+                        <!-- JS inyectará thumbs -->
+                    </div>
+                </div>
+
+                <div class="place-info-grid">
+                    <div class="info-content gs-reveal">
+                        <div class="info-card">
+                            <h3>Acerca de este lugar</h3>
+                            <p id="place-detail-desc" style="color: var(--c-text-muted);">Descripción detallada del lugar...</p>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>Información y horarios</h3>
+                            <div class="info-list">
+                                <div class="info-item">
+                                    <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    <div><strong style="color: var(--c-dark-green)">Horarios</strong> <br><span id="place-detail-hours" style="color: var(--c-text-muted)">Lunes a Viernes 9:00 a 18:00</span></div>
+                                </div>
+                                <div class="info-item">
+                                    <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                                    <div><strong style="color: var(--c-dark-green)">Teléfono</strong> <br><span id="place-detail-phone" style="color: var(--c-text-muted)">No disponible</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Panel Desktop -->
+                    <div class="action-panel gs-reveal">
+                        <div class="info-card" style="border-color: var(--c-primary); box-shadow: var(--shadow-hover);">
+                            <h3 style="margin-bottom: 8px;">¿Querés ir?</h3>
+                            <p style="font-size:0.9rem; color:var(--c-text-muted); margin-bottom: 24px;">Te guiamos usando Google Maps.</p>
+                            
+                            <button class="btn-primary" id="btn-desktop-llevame" style="width: 100%; margin-bottom: 12px; height: 56px;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                                Llevarme ahí ↗
+                            </button>
+                            
+                            <button class="btn-secondary" style="width: 100%; height: 56px;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                                Guardar en Favoritos
+                            </button>
+                            
+                            <div style="margin-top: 24px; border-radius: var(--radius-sm); overflow: hidden; height: 160px; background: #eee; position:relative;">
+                                <img src="https://placehold.co/400x200/eaf2eb/7FA68A?text=Mapa" style="width:100%; height:100%; object-fit:cover;" alt="Mapa mock">
+                                <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:var(--c-dark-green);">
+                                   <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 0 5z"></path></svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        // --- 1. Datos Mock (Con SVGs Profesionales actualizados) ---
+        const MOCK_DATA = {
+            categories: [
+                // SVGs detallados usando trazos limpios, esquinas redondeadas (stroke-linecap/join round)
+                { id: 'salud', name: 'Salud', icon: '<path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke-linecap="round" stroke-linejoin="round"/>' }, 
+                { id: 'seguridad', name: 'Seguridad', icon: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke-linecap="round" stroke-linejoin="round"/>' }, 
+                { id: 'restaurantes', name: 'Gastronomía', icon: '<path d="M18 8h1a4 4 0 0 1 0 8h-1M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8zM6 1v3M10 1v3M14 1v3" stroke-linecap="round" stroke-linejoin="round"/>' }, 
+                { id: 'farmacias', name: 'Farmacias', icon: '<rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M12 8v8M8 12h8" stroke-linecap="round" stroke-linejoin="round"/>' }, 
+                { id: 'supermercados', name: 'Comercios', icon: '<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0" stroke-linecap="round" stroke-linejoin="round"/>' }, 
+                { id: 'plazas', name: 'Espacios Verdes', icon: '<path d="M12 22v-6M12 16a4 4 0 0 0-4-4H4a8 8 0 0 1 16 0h-4a4 4 0 0 0-4 4zM12 12a4 4 0 0 0-4-4H6a6 6 0 0 1 12 0h-2a4 4 0 0 0-4 4z" stroke-linecap="round" stroke-linejoin="round"/>' }, 
+                { id: 'mascotas', name: 'Veterinarias', icon: '<path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM8 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM16 9a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zM12 13a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" stroke-linecap="round" stroke-linejoin="round"/>' },
+                { id: 'transporte', name: 'Transporte', icon: '<rect x="4" y="3" width="16" height="18" rx="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 17h.01M16 17h.01M4 11h16M12 21v-4" stroke-linecap="round" stroke-linejoin="round"/>' }
+            ],
+            places: [
+                {
+                    id: 'p1', catId: 'restaurantes', name: 'La Trattoria del Barrio', 
+                    address: 'Av. Principal 1234, Centro', coords: '-34.6037,-58.3816',
+                    featured: true, desc: 'Auténtica comida italiana con pastas caseras y un ambiente familiar inigualable. Ideal para cenas de fin de semana.',
+                    hours: 'Mar a Dom 12:00 - 15:30 y 20:00 - 23:30', phone: '+54 11 1234-5678',
+                    imgs: ['https://placehold.co/800x600/7FA68A/white?text=Restaurante+1', 'https://placehold.co/800x600/A8C5AE/white?text=Pizza', 'https://placehold.co/800x600/294A36/white?text=Interior']
+                },
+                {
+                    id: 'p2', catId: 'farmacias', name: 'Farmacia San Jorge', 
+                    address: 'Calle Las Flores 432', coords: '-34.6047,-58.3826',
+                    featured: true, desc: 'Farmacia de turno, perfumería y atención personalizada. Medición de presión gratuita.',
+                    hours: 'Lunes a Sábado 8:00 a 21:00', phone: '+54 11 4321-8765',
+                    imgs: ['https://placehold.co/800x600/FFFFFF/7FA68A?text=Farmacia+Fachada', 'https://placehold.co/800x600/f2f7f3/294A36?text=Gondolas']
+                },
+                {
+                    id: 'p3', catId: 'plazas', name: 'Plaza de la República', 
+                    address: 'Av. Libertador y San Martín', coords: '-34.6017,-58.3856',
+                    featured: true, desc: 'El pulmón verde más grande del barrio. Cuenta con juegos para niños, posta aeróbica y canil para mascotas.',
+                    hours: 'Abierto 24hs', phone: 'N/A',
+                    imgs: ['https://placehold.co/800x600/A8C5AE/294A36?text=Parque+Verde', 'https://placehold.co/800x600/eaf2eb/7FA68A?text=Juegos']
+                },
+                {
+                    id: 'p4', catId: 'salud', name: 'Centro Médico Sur', 
+                    address: 'Calle Esperanza 900', coords: '-34.6097,-58.3716',
+                    featured: false, desc: 'Atención primaria, guardia 24hs y laboratorios clínicos.',
+                    hours: 'Guardia 24hs. Consultorios: L a V 8-20hs', phone: '+54 11 5555-4444',
+                    imgs: ['https://placehold.co/800x600/FFFFFF/202620?text=Clinica']
+                }
+            ]
+        };
+
+        // --- 2. Lógica Principal de la App ---
+        const app = {
+            /* Variables para el carrusel continuo */
+            carouselAnimationId: null,
+            isCarouselPaused: false,
+
+            init() {
+                this.renderCategories();
+                this.renderFeatured();
+                this.initAnimations();
+                this.setupSearch();
+                this.setupScrollEffects();
+            },
+
+            // Interfaz y Menú Mobile
+            toggleMenu() {
+                const menu = document.getElementById('mobile-menu');
+                menu.classList.toggle('active');
+                document.body.style.overflow = menu.classList.contains('active') ? 'hidden' : '';
+            },
+            closeMenu() {
+                document.getElementById('mobile-menu').classList.remove('active');
+                document.body.style.overflow = '';
+            },
+
+            // Enrutador de un solo archivo (SPA)
+            navigate(viewId, param = null) {
+                // Limpiar barra inferior de móviles siempre al navegar
+                document.getElementById('mobile-action-bar').classList.remove('active');
+
+                const activeView = document.querySelector('.view.active');
+                const nextView = document.getElementById(`view-${viewId}`);
+                
+                if (!nextView || (activeView === nextView && !param)) return;
+
+                const isBackward = (viewId === 'home'); // Determina dirección de navegación
+
+                // Función que ejecuta la entrada de la nueva vista
+                const showNextView = () => {
+                    // Ocultar todas las vistas
+                    document.querySelectorAll('.view').forEach(v => {
+                        v.classList.remove('active');
+                    });
+                    
+                    // Mostrar solicitada
+                    nextView.classList.add('active');
+                    window.scrollTo({ top: 0, behavior: 'instant' });
+                    
+                    // Animación GSAP de entrada con deslizamiento
+                    gsap.fromTo(nextView, 
+                        { opacity: 0, x: isBackward ? -50 : 80 }, 
+                        { opacity: 1, x: 0, duration: 0.45, ease: "power3.out", clearProps: "transform" }
+                    );
+
+                    // Lógica por vista
+                    if (viewId === 'category' && param) {
+                        this.loadCategoryView(param);
+                    } else if (viewId === 'place' && param) {
+                        this.loadPlaceView(param);
+                        // Mostrar barra de acción móvil con ligero retraso
+                        setTimeout(() => {
+                            if(window.innerWidth < 768) {
+                                document.getElementById('mobile-action-bar').classList.add('active');
+                            }
+                        }, 500);
+                    }
+                    
+                    // Refrescar triggers de GSAP por cambio de DOM
+                    setTimeout(() => ScrollTrigger.refresh(), 100);
+                };
+
+                // Si hay una vista activa, la animamos hacia afuera primero
+                if (activeView && activeView !== nextView) {
+                    gsap.to(activeView, { 
+                        opacity: 0, 
+                        x: isBackward ? 100 : -40,
+                        duration: 0.35, 
+                        ease: "power2.inOut", 
+                        onComplete: showNextView 
+                    });
+                } else {
+                    showNextView();
+                }
+            },
+
+            scrollTo(elementId) {
+                if(document.getElementById('view-home').classList.contains('active')) {
+                    const el = document.getElementById(elementId);
+                    if(el) {
+                        // Offset para la barra de navegación (aprox 70px)
+                        window.scrollTo({ top: el.offsetTop - 70, behavior: 'smooth' });
+                    }
+                } else {
+                    this.navigate('home');
+                    setTimeout(() => this.scrollTo(elementId), 200); 
+                }
+            },
+
+            renderCategories() {
+                const grid = document.getElementById('cat-grid');
+                grid.innerHTML = MOCK_DATA.categories.map(cat => `
+                    <div class="cat-card" onclick="app.navigate('category', '${cat.id}')">
+                        <div class="cat-arrow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                        </div>
+                        <div class="cat-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">${cat.icon}</svg>
+                        </div>
+                        <div class="cat-title">${cat.name}</div>
+                    </div>
+                `).join('');
+            },
+
+            renderFeatured() {
+                const grid = document.getElementById('featured-grid');
+                const featured = MOCK_DATA.places.filter(p => p.featured);
+                
+                // 1. Inyectamos los elementos originales
+                const originalHTML = featured.map(place => this.createPlaceCardHTML(place)).join('');
+                
+                // 2. Duplicamos el contenido inmediatamente para crear la ilusión de loop infinito continuo
+                grid.innerHTML = originalHTML + originalHTML; 
+                
+                // Inicializar autoplay constante sin interrupciones
+                setTimeout(() => this.initCarousel(), 100);
+            },
+
+            initCarousel() {
+                const container = document.querySelector('.places-scroll-container');
+                if (!container) return;
+
+                this.stopCarousel();
+                this.isCarouselPaused = false;
+                
+                // Ajusta la velocidad modificando este valor (píxeles por frame)
+                const speed = 1.2; 
+
+                const play = () => {
+                    // Solo animar si estamos en la vista Inicio y no está pausado
+                    if (document.getElementById('view-home').classList.contains('active')) {
+                        if (!this.isCarouselPaused) {
+                            container.scrollLeft += speed;
+                            
+                            // Cuando llegamos a la mitad exacta (donde empieza el bloque clonado),
+                            // retrocedemos a 0 invisiblemente sin que el usuario lo note.
+                            if (container.scrollLeft >= container.scrollWidth / 2) {
+                                container.scrollLeft = 0;
+                            }
+                        }
+                    }
+                    this.carouselAnimationId = requestAnimationFrame(play);
+                };
+
+                // Comenzar bucle de animación
+                this.carouselAnimationId = requestAnimationFrame(play);
+
+                // Pausar al pasar el mouse o tocar para facilitar los clics en "Llevarme ahí"
+                container.addEventListener('mouseenter', () => this.isCarouselPaused = true);
+                container.addEventListener('mouseleave', () => this.isCarouselPaused = false);
+                
+                container.addEventListener('touchstart', () => this.isCarouselPaused = true, {passive: true});
+                container.addEventListener('touchend', () => {
+                    setTimeout(() => this.isCarouselPaused = false, 1500); // Retoma brevemente después de soltar
+                }, {passive: true});
+            },
+
+            stopCarousel() {
+                if (this.carouselAnimationId) {
+                    cancelAnimationFrame(this.carouselAnimationId);
+                    this.carouselAnimationId = null;
+                }
+            },
+
+            loadCategoryView(catId) {
+                const catInfo = MOCK_DATA.categories.find(c => c.id === catId);
+                const places = MOCK_DATA.places.filter(p => p.catId === catId);
+                
+                if(catInfo) {
+                    document.getElementById('cat-crumb-name').textContent = catInfo.name;
+                    document.getElementById('cat-page-title').textContent = catInfo.name;
+                    document.getElementById('cat-page-meta').textContent = `${places.length} lugares encontrados cerca tuyo`;
+                    
+                    const grid = document.getElementById('category-places-grid');
+                    grid.innerHTML = places.map(place => this.createPlaceCardHTML(place)).join('');
+                    
+                    if(places.length === 0) {
+                        grid.innerHTML = `<p style="color: var(--c-text-muted); text-align:center; padding: 40px 0;">No hay lugares registrados aquí.</p>`;
+                    } else {
+                        // Animación escalonada premium (Cards con scale y expo.out)
+                        gsap.fromTo('#category-places-grid .place-card', 
+                            { opacity: 0, y: 50, scale: 0.95 },
+                            { opacity: 1, y: 0, scale: 1, duration: 0.8, stagger: 0.08, ease: "expo.out", delay: 0.15, clearProps: "transform" }
+                        );
+                    }
+                }
+            },
+
+            loadPlaceView(placeId) {
+                const place = MOCK_DATA.places.find(p => p.id === placeId);
+                if(place) {
+                    const catInfo = MOCK_DATA.categories.find(c => c.id === place.catId);
+                    
+                    // Breadcrumbs
+                    const catCrumb = document.getElementById('place-crumb-cat');
+                    catCrumb.textContent = catInfo ? catInfo.name : 'Categoría';
+                    catCrumb.onclick = () => this.navigate('category', place.catId);
+                    
+                    document.getElementById('place-crumb-name').textContent = place.name;
+                    document.getElementById('place-detail-cat').textContent = catInfo ? catInfo.name : '';
+                    document.getElementById('place-detail-title').textContent = place.name;
+                    document.getElementById('place-detail-address').textContent = place.address;
+                    document.getElementById('place-detail-desc').textContent = place.desc;
+                    document.getElementById('place-detail-hours').textContent = place.hours;
+                    document.getElementById('place-detail-phone').textContent = place.phone;
+
+                    // Galería
+                    const mainImg = document.getElementById('place-main-img');
+                    const thumbsContainer = document.getElementById('place-thumbs');
+                    mainImg.src = place.imgs[0];
+                    
+                    if(place.imgs.length > 1) {
+                        thumbsContainer.innerHTML = place.imgs.map((img, idx) => `
+                            <div class="thumb ${idx === 0 ? 'active' : ''}" onclick="app.updateGallery(this, '${img}')">
+                                <img src="${img}" alt="Thumbnail">
+                            </div>
+                        `).join('');
+                    } else {
+                        thumbsContainer.innerHTML = '';
+                    }
+
+                    // Botones Llevarme Ahí (Desktop y Mobile)
+                    const openMaps = () => this.openGoogleMaps(place.coords, place.address);
+                    document.getElementById('btn-desktop-llevame').onclick = openMaps;
+                    document.getElementById('btn-mobile-llevame').onclick = openMaps;
+                }
+            },
+
+            updateGallery(thumbEl, imgUrl) {
+                document.getElementById('place-main-img').src = imgUrl;
+                document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+                thumbEl.classList.add('active');
+            },
+
+            createPlaceCardHTML(place) {
+                const catInfo = MOCK_DATA.categories.find(c => c.id === place.catId);
+                const catName = catInfo ? catInfo.name : '';
+                // Card rediseñada con botón de acción primario integrado
+                return `
+                    <div class="place-card" onclick="app.navigate('place', '${place.id}')">
+                        <div class="place-img-wrap">
+                            ${place.featured ? `<span class="place-badge">Destacado</span>` : ''}
+                            <img src="${place.imgs[0]}" alt="${place.name}" loading="lazy">
+                        </div>
+                        <div class="place-content">
+                            <span class="tagline" style="margin-bottom: 4px;">${catName}</span>
+                            <h3 class="place-title">${place.name}</h3>
+                            <div class="place-address">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path></svg>
+                                ${place.address}
+                            </div>
+                            <p class="place-desc">${place.desc}</p>
+                            
+                            <!-- Botón Llevarme ahí DIRECTO en la card -->
+                            <button class="btn-card-action" onclick="event.stopPropagation(); app.openGoogleMaps('${place.coords}', '${place.address}')">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;"><polygon points="3 11 22 2 13 21 11 13 3 11"></polygon></svg>
+                                Llevarme ahí ↗
+                            </button>
+                        </div>
+                    </div>
+                `;
+            },
+
+            openGoogleMaps(coords, address) {
+                let destination = coords;
+                if (!destination) { destination = encodeURIComponent(address); }
+                const url = `https://www.google.com/maps/dir/?api=1&destination=${destination}`;
+                window.open(url, '_blank');
+            },
+
+            setupSearch() {
+                const input = document.getElementById('main-search');
+                const suggBox = document.getElementById('search-sugg');
+
+                input.addEventListener('focus', () => suggBox.classList.add('active'));
+                
+                document.addEventListener('click', (e) => {
+                    if(!e.target.closest('.search-container')) {
+                        suggBox.classList.remove('active');
+                    }
+                });
+            },
+
+            setupScrollEffects() {
+                const nav = document.getElementById('navbar');
+                let lastScroll = 0;
+
+                // Parallax Hero Video
+                gsap.to('.hero-video-wrap', {
+                    yPercent: 15,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: ".hero",
+                        start: "top top",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                });
+
+                window.addEventListener('scroll', () => {
+                    const currentScroll = window.scrollY;
+                    
+                    // Efecto Glass Navbar
+                    if(currentScroll > 10) {
+                        nav.classList.add('scrolled');
+                        nav.style.background = 'var(--c-glass-bg)';
+                        nav.style.backdropFilter = 'blur(20px)';
+                    } else {
+                        nav.classList.remove('scrolled');
+                        nav.style.background = 'transparent';
+                        nav.style.backdropFilter = 'none';
+                    }
+
+                    // Ocultar barra inferior móvil al hacer scroll hacia abajo (opcional, para dar más espacio de lectura)
+                    const mobileBar = document.getElementById('mobile-action-bar');
+                    if (mobileBar.classList.contains('active')) {
+                        if (currentScroll > lastScroll && currentScroll > 200) {
+                            // Scrolleando abajo
+                            mobileBar.style.transform = 'translateY(150%)';
+                        } else {
+                            // Scrolleando arriba
+                            mobileBar.style.transform = 'translateY(0)';
+                        }
+                    }
+                    lastScroll = currentScroll;
+                }, { passive: true });
+            },
+
+            initAnimations() {
+                // Word Reveal optimizado
+                const titleEl = document.getElementById('hero-title-text');
+                if(titleEl) {
+                    const html = titleEl.innerHTML;
+                    // Limpiamos los <br> temporales para mantener saltos de línea
+                    const lines = html.split('<br>');
+                    const wrappedLines = lines.map(line => {
+                        return line.split(' ').map(word => `<span class="word">${word}</span>`).join(' ');
+                    });
+                    titleEl.innerHTML = wrappedLines.join('<br>');
+
+                    gsap.to('.hero-title .word', {
+                        y: 0, opacity: 1, duration: 1, stagger: 0.1,
+                        ease: "power4.out", delay: 0.1
+                    });
+                }
+
+                // Elementos genéricos ScrollTrigger
+                const revealElements = document.querySelectorAll('.gs-reveal');
+                revealElements.forEach(el => {
+                    gsap.fromTo(el, 
+                        { y: 40, opacity: 0 },
+                        { 
+                            y: 0, opacity: 1, duration: 0.7, ease: "power2.out",
+                            scrollTrigger: {
+                                trigger: el,
+                                start: "top 90%", // Empieza antes en móviles
+                                toggleActions: "play none none reverse"
+                            }
+                        }
+                    );
+                });
+            }
+        };
+
+        // Iniciar
+        document.addEventListener('DOMContentLoaded', () => {
+            app.init();
+        });
+
+    </script>
+</body>
+</html>
