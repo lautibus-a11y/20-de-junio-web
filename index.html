@@ -50,6 +50,12 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        /* Solo scroll vertical en móvil */
+        html { overflow-x: hidden; overflow-x: clip; max-width: 100%; overscroll-behavior-x: none; touch-action: pan-y; }
+        body { max-width: 100%; overflow-x: clip; overscroll-behavior-x: none; touch-action: pan-y; position: relative; }
+        main, .view { max-width: 100%; overflow-x: clip; }
+        .places-scroll-container { touch-action: pan-y; overflow-x: hidden !important; } /* carrusel solo autoplay, sin arrastre lateral */
+
         body {
             font-family: var(--font-main);
             background-color: var(--c-bg);
@@ -114,7 +120,7 @@
         .navbar .logo span { font-size: 1.1rem; color: #fff !important; text-shadow: 0 2px 8px rgba(0,0,0,0.8); transition: var(--transition); }
         .navbar.scrolled { background: var(--c-glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--c-border); }
         .navbar.scrolled .logo span { color: var(--c-dark-green) !important; text-shadow: none; }
-        .hero > .container { padding-left: calc(var(--container-px) + 4px); padding-right: calc(var(--container-px) + 4px); }
+        .hero > .container { margin-top: 16vh; padding-left: calc(var(--container-px) + 4px); padding-right: calc(var(--container-px) + 4px); }
 
         /* Botones Base - Mobile First (Touch targets grandes de mínimo 44px) */
         .btn-primary {
