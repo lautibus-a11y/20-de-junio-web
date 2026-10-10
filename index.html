@@ -207,10 +207,10 @@
         .section-header { margin-bottom: 24px; text-align: left; display: flex; justify-content: space-between; align-items: flex-end; }
         .section-title { font-size: clamp(1.5rem, 5vw, 2rem); }
 
-        /* Categorías - Mobile First: Grilla de 2 columnas */
+        /* Categorías - Mobile First: Grilla de 1 columna (uno abajo del otro) */
         .categories-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr;
             gap: 16px;
         }
 
@@ -282,7 +282,7 @@
         }
 
         .place-card {
-            min-width: 85vw; /* Ocupa casi toda la pantalla en móvil */
+            min-width: 260px; /* Tamaño móvil más compacto para que no se vean enormes */
             border-radius: var(--radius-lg); background: white;
             border: 1px solid var(--c-border); box-shadow: var(--shadow-md);
             overflow: hidden; display: flex; flex-direction: column; position: relative;
@@ -382,6 +382,8 @@
             .hero { padding: 80px 0 60px; }
             
             /* Grillas */
+            .categories-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+            
             /* Destacados - Desktop: Carousel en lugar de grilla para mantener autoplay */
             .places-scroll-container { 
                 overflow-x: auto; 
