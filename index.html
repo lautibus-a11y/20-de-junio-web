@@ -45,7 +45,7 @@
             --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             
             /* Layout variables */
-            --container-px: 24px; /* Padding lateral en móviles */
+            --container-px: 28px; /* Padding lateral en móviles */
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -108,6 +108,13 @@
         .navbar .container { display: flex; justify-content: space-between; align-items: center; }
         
         .logo { font-weight: 700; font-size: 1.5rem; color: var(--c-dark-green); letter-spacing: -0.5px; }
+        .navbar { padding: 14px 0; }
+        .navbar .container { padding-left: max(var(--container-px), env(safe-area-inset-left)); padding-right: max(var(--container-px), env(safe-area-inset-right)); }
+        .navbar .logo img { height: 44px !important; }
+        .navbar .logo span { font-size: 1.1rem; color: #fff !important; text-shadow: 0 2px 8px rgba(0,0,0,0.8); transition: var(--transition); }
+        .navbar.scrolled { background: var(--c-glass-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--c-border); }
+        .navbar.scrolled .logo span { color: var(--c-dark-green) !important; text-shadow: none; }
+        .hero > .container { padding-left: calc(var(--container-px) + 4px); padding-right: calc(var(--container-px) + 4px); }
 
         /* Botones Base - Mobile First (Touch targets grandes de mínimo 44px) */
         .btn-primary {
@@ -268,7 +275,8 @@
         /* Lugares Destacados - Mobile First: Scroll Horizontal (Carousel) */
         .places-scroll-container {
             /* Scroll de lado a lado alineado con el container */
-            padding: 8px var(--container-px) 32px var(--container-px);
+            padding: 8px var(--container-px) 24px var(--container-px);
+            scroll-padding-left: var(--container-px);
             overflow-x: auto; 
             -webkit-overflow-scrolling: touch; /* Suavidad en iOS */
             scrollbar-width: none; /* Ocultar scrollbar Firefox */
@@ -277,13 +285,13 @@
 
         .places-grid { 
             display: flex; 
-            gap: 20px; 
+            gap: 14px; 
             width: max-content; /* Permite el scroll continuo sin comprimir */
-            padding-right: 20px; /* Ajuste matemático para el loop infinito (iguala al gap) */
+            padding-right: 14px; /* Ajuste matemático para el loop infinito (iguala al gap) */
         }
 
         .place-card {
-            min-width: 210px; /* Tamaño móvil mucho más compacto, estilo app nativa */
+            width: 62vw; min-width: 190px; max-width: 240px; /* Compacto, estilo app nativa */
             border-radius: var(--radius-lg); background: white;
             border: 1px solid var(--c-border); box-shadow: var(--shadow-md);
             overflow: hidden; display: flex; flex-direction: column; position: relative;
@@ -291,7 +299,7 @@
             transform: translateZ(0); /* Aceleración por hardware para scroll suave */
         }
         
-        .place-img-wrap { position: relative; padding-top: 55%; overflow: hidden; }
+        .place-img-wrap { position: relative; padding-top: 62%; overflow: hidden; }
         .place-img-wrap img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         .place-badge {
             position: absolute; top: 12px; left: 12px; padding: 6px 14px;
@@ -299,16 +307,16 @@
             background: rgba(255,255,255,0.9); color: var(--c-dark-green); box-shadow: var(--shadow-sm);
         }
         
-        .place-content { padding: 20px; display: flex; flex-direction: column; flex: 1; }
-        .place-title { font-size: 1.25rem; margin-bottom: 6px; line-height: 1.2; }
-        .place-address { color: var(--c-text-muted); font-size: 0.85rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-        .place-desc { font-size: 0.95rem; color: var(--c-text-main); margin-bottom: 20px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
+        .place-content { padding: 14px; display: flex; flex-direction: column; flex: 1; }
+        .place-title { font-size: 1.05rem; margin-bottom: 4px; line-height: 1.2; }
+        .place-address { color: var(--c-text-muted); font-size: 0.78rem; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+        .place-desc { font-size: 0.85rem; color: var(--c-text-main); margin-bottom: 12px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; flex: 1; }
         
         /* Botón Llevarme ahí directo en la Card - Rediseñado para UX táctil */
         .btn-card-action {
             background-color: var(--c-primary); color: white !important;
-            width: 100%; padding: 14px; border-radius: var(--radius-md);
-            font-weight: 600; font-size: 1rem;
+            width: 100%; padding: 10px; border-radius: var(--radius-sm);
+            font-weight: 600; font-size: 0.9rem;
             display: flex; align-items: center; justify-content: center; gap: 8px;
             transition: var(--transition); border: none; margin-top: auto;
         }
@@ -364,6 +372,9 @@
         /* RESPONSIVE DESKTOP (Min-width: 768px y 1024px) */
         @media (min-width: 768px) {
             :root { --container-px: 40px; }
+            .navbar .logo img { height: 56px !important; }
+            .navbar .logo span { font-size: 1.5rem; }
+            .place-card { width: auto; }
             body { padding-top: 20px; } /* Más aire en desktop */
             
             /* Navbar */
