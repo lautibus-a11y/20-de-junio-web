@@ -9,7 +9,7 @@
     <!-- Fuentes Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     
     <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -165,8 +165,10 @@
         /* Hero Section */
         .hero { padding: 40px 0; text-align: center; }
         .hero-title {
+            font-family: 'Playfair Display', serif;
             font-size: clamp(2.25rem, 8vw, 4.5rem); /* Tipografía fluida extrema para móvil a desktop */
             line-height: 1.1; margin-bottom: 16px; overflow: hidden;
+            letter-spacing: -0.02em;
         }
         .hero-title .word { display: inline-block; transform: translateY(110%); opacity: 0; }
         .hero-subtitle {
@@ -281,7 +283,7 @@
         }
 
         .place-card {
-            min-width: 260px; /* Tamaño móvil más compacto para que no se vean enormes */
+            min-width: 210px; /* Tamaño móvil mucho más compacto, estilo app nativa */
             border-radius: var(--radius-lg); background: white;
             border: 1px solid var(--c-border); box-shadow: var(--shadow-md);
             overflow: hidden; display: flex; flex-direction: column; position: relative;
